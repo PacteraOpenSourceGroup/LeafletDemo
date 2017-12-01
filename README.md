@@ -14,7 +14,7 @@
 
 ----------
 
-**Leaflet倒包的小要点**
+**Leaflet倒包的小要点**<br>
 倒包需要样式的css和功能的js,但是**js一定要在css后加载**
 
 ```
@@ -27,7 +27,7 @@
    crossorigin=""></script>
 ```
 
-**地图的坑：**
+**地图的坑：**<br>
 
 地图的坑是做的过程中遇到的第一个问题
 
@@ -80,7 +80,7 @@ https://github.com/kartena/Proj4Leaflet
 
 --------
 
-**事件分发**:
+**事件分发**:<br>
 地图本身和地图上面的元素都可以拦截事件，已知场景下是从上层图层自上而下传递事件。
 
 常规元素添加监听姿式如下：
@@ -144,7 +144,7 @@ https://github.com/kartena/Proj4Leaflet
 
 -------
 
-**自定义Icon**
+**自定义Icon**<br>
 
 系统默认的Icon是一个蓝色雨滴状的Icon,我们也完全可以自定义。
 
@@ -181,7 +181,7 @@ Icon其实有2层分别是实质Icon和阴影Icon，如果不需要高端的背�
 
 -------
 
-**高端操作：Icon角度旋转**
+**高端操作：Icon角度旋转**<br>
 普通的点/线/图形基础库已经完全满足了我们的需求，但是如果是做导航类的，就会有方向性的需要，就会有icon像车头一样变动。
 
 找了一堆找到个比较好的实现[Leaflet.RotatedMarker](https://github.com/bbecquet/Leaflet.RotatedMarker)
