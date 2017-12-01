@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--倒包 css必须在js前-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+    <title>Leaflet地图Dmo</title>
+</head>
+<body>
+<div id="map" style="width: 800px; height: 600px"></div>
+<script src="../lib/proj4-compressed.js"></script>
+<script src="../js/proj4leaflet.js"></script>
+<script src="../js/leaflet.rotatedMarker.js"></script>
+<script>
+    //城市涂层
+    var cities = L.layerGroup();
+    //三个坐标点
+    L.marker([31.2303904, 121.47370209999997]).addTo(cities);
+    L.marker([31.2303904, 121.45370209999997], {rotationAngle: 270}).addTo(cities);
+    var big = [50, 50];
+    var small = [20, 20];
+    //    以下部分是Icon Demo
+    var iconB = L.Icon.extend({
+        options: {
+            iconSize: big
+        }
+    });
+    var iconS = L.Icon.extend({
+        options: {
+            iconSize: small
+        }
+    });
+    var bigIcon = new iconB({iconUrl: '../img/icon1.jpeg'});
+    var smallIcon = new iconS({iconUrl: '../img/icon1.jpeg'});
+    //draggable 为true表示标签可拖拽
+    var custom = L.marker([31.2303904, 121.46370209999997], {
+        icon: bigIcon,
+        draggable: true,
+        title: '可爱的表情'
+    }).addTo(cities).bindPopup("我是一句话")
+        .openPopup();
+
+    var crs = new L.Proj.CRS(
+        'EPSG:3395',
+        '+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs',
+        {
+            resolutions: function () {
+                level = 19;
+                var res = [];
+                res[0] = Math.pow(2, 18);
+                for (var i = 1; i < level; i++) {
+                    res[i] = Math.pow(2, (18 - i))
+                }
+                return res;
+            }(),
+            origin: [0, 0],
+            bounds: L.bounds([20037508.342789244, 0], [0, 20037508.342789244])
+        }
+    );
+
+    var layout = L.tileLayer(
+        'http://online{s}.map.bdimg.com/tile/?qt=tile&x={x}&y={y}&z={z}&styles=pl&udt=20150518',
+        {
+            maxZoom: 18,//缩放比为同值时缩放器将无法使用
+            minZoom: 3,
+            subdomains: [0, 1, 2],
+            tms: true
+        }
+    );
+    var leafletMap = L.map('map', {
+        crs: crs, layers: [layout, cities],
+        center: [31.2303904, 121.47370209999997],//初始化中心点
+        zoom: 15,
+        closePopupOnClick: true,//为false的时候点击旁边区域不会关闭pop
+        zoomSnap: 1,//默认为1，操作缩放比
+        trackResize: true,//是否根据浏览器大小变化而刷新
+        dragging: true//为false时不可拖动
+
+    });
+
+    L.circle(
+        [31.2303904, 121.47370209999997],
+        50,
+        {
+            color: 'red',
+            fillColor: '#ff0000',
+            fillOpacity: 0.5
+        }
+    ).addTo(leafletMap);
+    L.circle(
+        [31.2303904, 121.47370209999997],
+        100,
+        {
+            color: 'green',
+            fillColor: '#aaffff',
+            fillOpacity: 0.5
+        }
+    ).addTo(leafletMap).bindPopup("我是个pop");
+
+    L.circle([31.2303904, 121.45370209999997], 150, {
+        color: 'green',
+        fillColor: '#ccaaff',
+        fillOpacity: 0.5
+    }).addTo(leafletMap)
+        .bindPopup('这是一句<br>看见了吧');
+
+
+    //摄制中心点和缩放比
+    //    leafletMap.setView([31.2303904, 121.47370209999997], 15);
+
+
+    leafletMap.on('click', function () {
+        console.log('--->click 点击事件')
+    });
+    leafletMap.on('mousedown', function () {
+        console.log('--->mousedown 按下不抬起')
+    });
+    leafletMap.on('mouseup', function () {
+        console.log('--->mouseup 按下抬起');
+    });
+    leafletMap.on('dblclick', function () {
+        console.log('--->dblclick 双击触发');
+    });
+    //    leafletMap.on('mouseover', function () {
+    //        console.log('--->mouseover 鼠标移出移进地图都会触发');
+    //    });
+    //触发极度频繁
+    //    leafletMap.on('mousemove', function () {
+    //        console.log('--->mousemove 鼠标在地图上移动触发');
+    //    });
+    leafletMap.on('viewreset', function () {
+        console.log('--->viewreset 重绘内容时触发');
+        console.log('--->getCenter ' + leafletMap.getCenter());
+        console.log('--->getSize' + leafletMap.getSize());
+        console.log('--->hasLayer是否有此图层 ' + leafletMap.hasLayer(layout));
+
+    });
+    leafletMap.on('autopanstart', function () {
+        console.log('--->autopanstart 自动平移时触发');
+    });
+    leafletMap.on('whenReady', function () {
+        console.log('--->whenReady 页面完全加载完');
+    });
+    layout.on("load", function () {
+        console.log("--->layout 图层被加载一次")
+    });
+
+    leafletMap.on('zoomend', function (ev) {
+        if (leafletMap.getZoom() > 14) {
+            custom.setIcon(bigIcon);
+        } else {
+            custom.setIcon(smallIcon);
+        }
+    });
+
+    var overlayMaps = {
+        "城市中的点": cities
+    };
+
+    var baseLayers = {
+        "第一层": layout,
+        "第二层": layout
+    };
+
+    L.control.layers(baseLayers, overlayMaps).addTo(leafletMap);
+
+    //定时器滚动地图
+    var startTime = new Date().getTime();
+    var interval = setInterval(function () {
+        if (new Date().getTime() - startTime > 6000) {
+            clearInterval(interval);
+            return;
+        }
+        leafletMap.setView([31.2303904, 121.47370209999997], 9, {duration: 1, animate: true});
+        setTimeout(function () {
+            leafletMap.setView([31.2303904, 121.45370209999997], 15, {duration: 1, animate: true});
+            leafletMap.panTo([31.2303904, 121.47370209999997]);//平移坐标
+        }, 2000);
+    }, 2000);
+</script>
+</body>
+</html>
