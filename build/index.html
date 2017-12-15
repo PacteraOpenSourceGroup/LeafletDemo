@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+          integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+          crossorigin=""/>
+    <!--<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>-->
+    <meta charset="UTF-8">
+    <title>Map</title>
+    <style>
+        @import "./static/css/pop/infor_pop.css";
+    </style>
+</head>
+
+<body>
+<div id="map-wrapper" class="map">
+    <div id="map" class="map"></div>
+    <div id="button-wrapper">
+        <input type="button" id="ship_button" value="Btn1" class="btnStyle span3"/>
+        <input type="button" id="generator_button" value="Btn2" class="btnStyle span3"/>
+        <input type="button" id="show_all" value="Btn3" class="btnStyle span3"/>
+    </div>
+</div>
+<div id="devices_div" class="devices"></div>
+<div id="data_div" class="devices" style=" top: 23%;"></div>
+<div id="info_div" class="devices" style=" top: 38%; height: 45%;"></div>
+</div>
+<script src="bundle.js"></script>
+
+</body>
+
+</html>
